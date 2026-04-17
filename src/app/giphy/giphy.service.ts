@@ -61,52 +61,10 @@ export class GiphyService {
     const cacheKey = trendingListCacheKey(limit, offset);
     const onBrowser = isPlatformBrowser(this.platformId);
     const onServer = isPlatformServer(this.platformId);
-    // #region agent log
-    fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Debug-Session-Id': '981d77',
-      },
-      body: JSON.stringify({
-        sessionId: '981d77',
-        runId: 'trending-cache-path',
-        hypothesisId: 'H1-H5',
-        location: 'src/app/giphy/giphy.service.ts:trending',
-        message: 'Trending service call',
-        data: {
-          offset,
-          limit,
-          onBrowser,
-          onServer,
-          transferKeyPresent: this.transferState.hasKey(transferKey),
-        },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
 
     if (onBrowser) {
       const cached = this.trendingListCache.get(cacheKey);
       if (cached) {
-        // #region agent log
-        fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Debug-Session-Id': '981d77',
-          },
-          body: JSON.stringify({
-            sessionId: '981d77',
-            runId: 'trending-cache-path',
-            hypothesisId: 'H1-H5',
-            location: 'src/app/giphy/giphy.service.ts:trending',
-            message: 'Trending service browser memory-cache hit',
-            data: { offset, limit },
-            timestamp: Date.now(),
-          }),
-        }).catch(() => {});
-        // #endregion
         return of(cached);
       }
     }
@@ -118,48 +76,12 @@ export class GiphyService {
         try {
           const body = JSON.parse(raw) as TrendingListPayload;
           this.trendingListCache.set(cacheKey, body);
-          // #region agent log
-          fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Debug-Session-Id': '981d77',
-            },
-            body: JSON.stringify({
-              sessionId: '981d77',
-              runId: 'trending-cache-path',
-              hypothesisId: 'H1-H5',
-              location: 'src/app/giphy/giphy.service.ts:trending',
-              message: 'Trending service TransferState hit',
-              data: { offset, limit, items: body.items.length },
-              timestamp: Date.now(),
-            }),
-          }).catch(() => {});
-          // #endregion
           return of(body);
         } catch {}
       }
     }
 
     const url = `${this.apiBase()}/api/gifs/trending`;
-    // #region agent log
-    fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Debug-Session-Id': '981d77',
-      },
-      body: JSON.stringify({
-        sessionId: '981d77',
-        runId: 'trending-cache-path',
-        hypothesisId: 'H1-H5',
-        location: 'src/app/giphy/giphy.service.ts:trending',
-        message: 'Trending service fallback to HTTP API',
-        data: { offset, limit, url },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
     return this.http
       .get<{ items: GifItem[]; totalCount: number }>(url, {
         params: { offset: String(offset), limit: String(limit) },
