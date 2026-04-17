@@ -4,13 +4,15 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
-import express from 'express';
+
 import { config as loadEnv } from 'dotenv';
+import express from 'express';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import { registerGiphyApiRoutes } from './server/api-routes';
-import { createGiphyControllers } from './server/giphy-controllers';
 import { GiphyClient } from './server/giphy-client';
+import { createGiphyControllers } from './server/giphy-controllers';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -37,9 +39,7 @@ app.use(
 app.use('/**', (req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });
 

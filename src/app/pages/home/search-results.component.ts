@@ -1,20 +1,9 @@
 import { NgIf } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  inject,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import {
-  debounce,
-  distinctUntilChanged,
-  map,
-  of,
-  switchMap,
-  timer,
-} from 'rxjs';
+
+import { debounce, distinctUntilChanged, map, of, switchMap, timer } from 'rxjs';
+
 import { GifListComponent } from '../../components/gif-list/gif-list.component';
 import { GIPHY_PAGE_SIZE, GiphyService } from '../../giphy/giphy.service';
 import { PagedGifListStore } from '../../shared/paged-gif-list.store';
@@ -53,9 +42,7 @@ export class SearchResultsComponent {
             this.store.reset();
             return of(null);
           }
-          this.store.setLoader((offset, limit) =>
-            this.giphy.search(q, offset, limit),
-          );
+          this.store.setLoader((offset, limit) => this.giphy.search(q, offset, limit));
           this.store.reset();
           this.store.loadFirstPage();
           return of(null);

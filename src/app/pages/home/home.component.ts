@@ -1,13 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+
+import { SearchQueryStore } from '../../shared/search-query.store';
 import { SearchResultsComponent } from './search-results.component';
 import { TrendingListComponent } from './trending-list.component';
-import { SearchQueryStore } from '../../shared/search-query.store';
 
 @Component({
   standalone: true,

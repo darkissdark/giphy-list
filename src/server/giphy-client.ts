@@ -1,8 +1,6 @@
 import axios from 'axios';
-import type {
-  GiphySearchResponse,
-  GiphySingleGifResponse,
-} from '../app/giphy/giphy-api.types';
+
+import type { GiphySearchResponse, GiphySingleGifResponse } from '../app/giphy/giphy-api.types';
 
 const BASE = 'https://api.giphy.com/v1/gifs';
 
@@ -45,17 +43,11 @@ export class GiphyClient {
     return data;
   }
 
-  async getById(
-    apiKey: string,
-    id: string,
-  ): Promise<GiphySingleGifResponse> {
-    const { data } = await axios.get<GiphySingleGifResponse>(
-      `${BASE}/${encodeURIComponent(id)}`,
-      {
-        params: { api_key: apiKey },
-        timeout: this.timeoutMs,
-      },
-    );
+  async getById(apiKey: string, id: string): Promise<GiphySingleGifResponse> {
+    const { data } = await axios.get<GiphySingleGifResponse>(`${BASE}/${encodeURIComponent(id)}`, {
+      params: { api_key: apiKey },
+      timeout: this.timeoutMs,
+    });
     return data;
   }
 }

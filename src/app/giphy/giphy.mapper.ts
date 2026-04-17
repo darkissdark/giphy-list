@@ -66,11 +66,7 @@ function pickPreviewBundle(images: GiphyGif['images']): {
 }
 
 function pickOriginalUrl(images: GiphyGif['images']): string {
-  return (
-    images?.original?.url ??
-    images?.downsized?.url ??
-    pickPreviewBundle(images).previewUrl
-  );
+  return images?.original?.url ?? images?.downsized?.url ?? pickPreviewBundle(images).previewUrl;
 }
 
 function pickShareUrl(gif: GiphyGif): string {
@@ -113,12 +109,8 @@ export function mapGiphyGifToItem(gif: GiphyGif): GifItem {
 
 export function mapGiphyGifToDetails(gif: GiphyGif): GifDetails {
   const base = mapGiphyGifToItem(gif);
-  const authorUsername =
-    gif.user?.username?.trim() || gif.username?.trim() || '';
-  const display =
-    gif.user?.display_name?.trim() ||
-    gif.user?.username?.trim() ||
-    base.username;
+  const authorUsername = gif.user?.username?.trim() || gif.username?.trim() || '';
+  const display = gif.user?.display_name?.trim() || gif.user?.username?.trim() || base.username;
   const profile = gif.user?.profile_url?.trim() ?? '';
   const original = pickOriginalUrl(gif.images);
   const w = gif.images?.original?.width ?? gif.images?.downsized?.width ?? '';

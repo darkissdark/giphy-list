@@ -1,5 +1,6 @@
 import { DestroyRef, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { Subject } from 'rxjs';
 
 export interface CopyFeedbackOptions {
@@ -8,10 +9,7 @@ export interface CopyFeedbackOptions {
   ms?: number;
 }
 
-export function createCopyFeedback(
-  destroyRef: DestroyRef,
-  options: CopyFeedbackOptions,
-) {
+export function createCopyFeedback(destroyRef: DestroyRef, options: CopyFeedbackOptions) {
   const ms = options.ms ?? 1200;
   const label = signal(options.idleLabel);
   const disabled = signal(false);
@@ -50,4 +48,3 @@ export function createCopyFeedback(
 
   return { label, disabled, onCopied, reset };
 }
-

@@ -18,11 +18,7 @@ export async function fetchGifsByAuthorFromGiphy(
 ): Promise<{ items: GifItem[]; totalCount: number }> {
   const username = p.username.trim();
   if (!username || username.toLowerCase() === 'unknown') {
-    throw new GiphyAppError(
-      'Parameter username is required.',
-      'BAD_REQUEST',
-      400,
-    );
+    throw new GiphyAppError('Parameter username is required.', 'BAD_REQUEST', 400);
   }
 
   const collected: GifItem[] = [];
@@ -45,11 +41,7 @@ export async function fetchGifsByAuthorFromGiphy(
       res = await fetch(url.toString(), { signal: controller.signal });
     } catch (e) {
       if (e instanceof Error && e.name === 'AbortError') {
-        throw new GiphyAppError(
-          'Giphy request timeout.',
-          'NETWORK',
-          0,
-        );
+        throw new GiphyAppError('Giphy request timeout.', 'NETWORK', 0);
       }
       throw new GiphyAppError('Network error.', 'NETWORK', 0);
     } finally {
@@ -64,9 +56,7 @@ export async function fetchGifsByAuthorFromGiphy(
       } catch {}
       const code = res.status === 429 ? 'RATE_LIMIT' : 'UPSTREAM';
       throw new GiphyAppError(
-        res.status === 429
-          ? 'Giphy rate limit exceeded. Please try again later.'
-          : message,
+        res.status === 429 ? 'Giphy rate limit exceeded. Please try again later.' : message,
         code,
         res.status,
       );

@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import type express from 'express';
+
 import type { GiphyAppErrorCode } from '../app/giphy/giphy.errors';
 
 export function sendError(
@@ -32,18 +33,10 @@ export function mapAxiosError(err: unknown, res: express.Response): void {
     const ax = err as AxiosError<{ message?: string }>;
     const status = ax.response?.status ?? 502;
     if (status === 429) {
-      sendError(
-        res,
-        429,
-        'Giphy rate limit exceeded. Please try again later.',
-        'RATE_LIMIT',
-      );
+      sendError(res, 429, 'Giphy rate limit exceeded. Please try again later.', 'RATE_LIMIT');
       return;
     }
-    const msg =
-      ax.response?.data?.message ||
-      ax.message ||
-      'Error calling Giphy API.';
+    const msg = ax.response?.data?.message || ax.message || 'Error calling Giphy API.';
     sendError(res, status >= 400 && status < 600 ? status : 502, msg, 'UPSTREAM');
     return;
   }

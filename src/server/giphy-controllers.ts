@@ -1,15 +1,16 @@
 import type express from 'express';
-import { GiphyAppError } from '../app/giphy/giphy.errors';
+
 import { fetchGifsByAuthorFromGiphy } from '../app/giphy/giphy-by-user.fetch';
+import { GiphyAppError } from '../app/giphy/giphy.errors';
 import { mapGiphyGifToDetails, mapGiphyGifToItem } from '../app/giphy/giphy.mapper';
 import type { GifItem } from '../app/giphy/giphy.types';
-import { GiphyClient } from './giphy-client';
-import { mapAxiosError, requireApiKey, sendError } from './http-errors';
 import {
   TRENDING_LIST_CACHE_TTL_MS,
   createMemoryCache,
   trendingListCacheKey,
 } from '../shared/memory-cache';
+import { GiphyClient } from './giphy-client';
+import { mapAxiosError, requireApiKey, sendError } from './http-errors';
 import { fetchBinaryFromUrl } from './media-fetch';
 import { getPagination } from './request-pagination';
 import { assertAllowedGifUrl } from './url-allowlist';
@@ -71,8 +72,7 @@ export function createGiphyControllers(giphy: GiphyClient) {
     download: async (req: express.Request, res: express.Response) => {
       const rawUrl = String(req.query['url'] ?? '');
       const filename =
-        String(req.query['filename'] ?? 'giphy.gif').replace(/[^\w.\-]+/g, '_') ||
-        'giphy.gif';
+        String(req.query['filename'] ?? 'giphy.gif').replace(/[^\w.-]+/g, '_') || 'giphy.gif';
 
       const parsed = assertAllowedGifUrl(rawUrl);
       if (!parsed) {
@@ -81,14 +81,9 @@ export function createGiphyControllers(giphy: GiphyClient) {
       }
 
       try {
-        const { data, contentType } = await fetchBinaryFromUrl(
-          parsed.toString(),
-        );
+        const { data, contentType } = await fetchBinaryFromUrl(parsed.toString());
         res.setHeader('Content-Type', contentType);
-        res.setHeader(
-          'Content-Disposition',
-          `attachment; filename="${filename}"`,
-        );
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
         res.send(Buffer.from(data));
       } catch (e) {
         mapAxiosError(e, res);

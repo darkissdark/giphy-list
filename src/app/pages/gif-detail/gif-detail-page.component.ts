@@ -10,6 +10,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+
 import {
   EMPTY,
   catchError,
@@ -22,6 +23,7 @@ import {
   tap,
   timeout,
 } from 'rxjs';
+
 import { GifListComponent } from '../../components/gif-list/gif-list.component';
 import { GiphyAppError } from '../../giphy/giphy.errors';
 import { GiphyService } from '../../giphy/giphy.service';
@@ -81,10 +83,7 @@ export class GifDetailPageComponent {
         switchMap((id) =>
           this.giphy.getGifById(id).pipe(
             catchError((e: unknown) => {
-              this.error =
-                e instanceof GiphyAppError
-                  ? e.message
-                  : 'Failed to load GIF.';
+              this.error = e instanceof GiphyAppError ? e.message : 'Failed to load GIF.';
               this.applyDefaultSeo();
               return of(null);
             }),
@@ -155,10 +154,7 @@ export class GifDetailPageComponent {
 
   downloadHref(): string {
     if (!this.details) return '#';
-    const safeName = `${this.details.title || 'giphy'}`.replace(
-      /[^\w.\-]+/g,
-      '_',
-    );
+    const safeName = `${this.details.title || 'giphy'}`.replace(/[^\w.-]+/g, '_');
     return this.giphy.downloadUrl(this.details.originalUrl, `${safeName}.gif`);
   }
 

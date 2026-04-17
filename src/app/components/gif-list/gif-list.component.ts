@@ -1,3 +1,4 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,9 +8,9 @@ import {
   input,
   output,
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { GifCardComponent } from '../gif-card/gif-card.component';
+
 import type { GifItem } from '../../giphy/giphy.types';
+import { GifCardComponent } from '../gif-card/gif-card.component';
 
 @Component({
   standalone: true,

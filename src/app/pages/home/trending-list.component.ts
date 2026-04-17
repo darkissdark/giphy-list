@@ -1,10 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  inject,
-} from '@angular/core';
 import { NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+
 import { GifListComponent } from '../../components/gif-list/gif-list.component';
 import { GIPHY_PAGE_SIZE, GiphyService } from '../../giphy/giphy.service';
 import { PagedGifListStore } from '../../shared/paged-gif-list.store';

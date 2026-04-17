@@ -9,7 +9,6 @@ export async function fetchBinaryFromUrl(
     timeout: timeoutMs,
     maxContentLength: 40 * 1024 * 1024,
   });
-  const contentType =
-    (res.headers['content-type'] as string) || 'application/octet-stream';
+  const contentType = (res.headers['content-type'] as string) || 'application/octet-stream';
   return { data: res.data, contentType };
 }

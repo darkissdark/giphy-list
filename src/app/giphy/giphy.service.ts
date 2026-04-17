@@ -8,7 +8,9 @@ import {
   inject,
   makeStateKey,
 } from '@angular/core';
+
 import { Observable, catchError, from, map, of, throwError } from 'rxjs';
+
 import {
   TRENDING_LIST_CACHE_TTL_MS,
   createMemoryCache,
@@ -33,8 +35,9 @@ export class GiphyService {
   private readonly request = inject(REQUEST, { optional: true });
   private readonly platformId = inject(PLATFORM_ID);
 
-  private readonly trendingListCache =
-    createMemoryCache<TrendingListPayload>(TRENDING_LIST_CACHE_TTL_MS);
+  private readonly trendingListCache = createMemoryCache<TrendingListPayload>(
+    TRENDING_LIST_CACHE_TTL_MS,
+  );
 
   search(
     query: string,
@@ -101,12 +104,10 @@ export class GiphyService {
 
   getGifById(id: string): Observable<GifDetails> {
     const url = `${this.apiBase()}/api/gifs/${encodeURIComponent(id)}`;
-    return this.http
-      .get<{ data: GifDetails }>(url)
-      .pipe(
-        map((r) => r.data),
-        catchError((err) => throwError(() => this.mapHttpError(err))),
-      );
+    return this.http.get<{ data: GifDetails }>(url).pipe(
+      map((r) => r.data),
+      catchError((err) => throwError(() => this.mapHttpError(err))),
+    );
   }
 
   getByAuthor(
@@ -118,18 +119,14 @@ export class GiphyService {
     const u = username.trim();
     const shouldTransfer = isPlatformServer(this.platformId) && offset === 0;
 
-    const key = makeStateKey<string>(
-      `giphy:byuser:${u.toLowerCase()}:${excludeGifId}:${limit}`,
-    );
+    const key = makeStateKey<string>(`giphy:byuser:${u.toLowerCase()}:${excludeGifId}:${limit}`);
 
     if (!isPlatformServer(this.platformId) && this.transferState.hasKey(key)) {
       const raw = this.transferState.get(key, '');
       this.transferState.remove(key);
       if (raw) {
         try {
-          return of(
-            JSON.parse(raw) as { items: GifItem[]; totalCount: number },
-          );
+          return of(JSON.parse(raw) as { items: GifItem[]; totalCount: number });
         } catch {}
       }
     }
@@ -140,14 +137,7 @@ export class GiphyService {
           ? process.env['GIPHY_API_KEY']?.trim()
           : undefined;
       if (!apiKey) {
-        return throwError(
-          () =>
-            new GiphyAppError(
-              'GIPHY_API_KEY is not set.',
-              'BAD_REQUEST',
-              500,
-            ),
-        );
+        return throwError(() => new GiphyAppError('GIPHY_API_KEY is not set.', 'BAD_REQUEST', 500));
       }
       return from(
         fetchGifsByAuthorFromGiphy({
@@ -168,10 +158,7 @@ export class GiphyService {
           throwError(() =>
             err instanceof GiphyAppError
               ? err
-              : new GiphyAppError(
-                  'Failed to load author GIFs.',
-                  'UNKNOWN',
-                ),
+              : new GiphyAppError('Failed to load author GIFs.', 'UNKNOWN'),
           ),
         ),
       );
@@ -212,11 +199,8 @@ export class GiphyService {
       const host =
         typeof (headers as Headers).get === 'function'
           ? (headers as Headers).get('host')
-          : (headers as unknown as Record<string, string | string[] | undefined>)[
-              'host'
-            ];
-      const proto =
-        (Array.isArray(xfp) ? xfp[0] : xfp)?.split(',')[0]?.trim() || 'http';
+          : (headers as unknown as Record<string, string | string[] | undefined>)['host'];
+      const proto = (Array.isArray(xfp) ? xfp[0] : xfp)?.split(',')[0]?.trim() || 'http';
       const hostName = (Array.isArray(host) ? host[0] : host) || 'localhost';
       return `${proto}://${hostName}`;
     }
@@ -245,24 +229,12 @@ export class GiphyService {
         );
       }
       if (err.status === 429) {
-        return new GiphyAppError(
-          'Rate limit exceeded. Please try again later.',
-          'RATE_LIMIT',
-          429,
-        );
+        return new GiphyAppError('Rate limit exceeded. Please try again later.', 'RATE_LIMIT', 429);
       }
       if (err.status === 0) {
-        return new GiphyAppError(
-          'No connection to server.',
-          'NETWORK',
-          0,
-        );
+        return new GiphyAppError('No connection to server.', 'NETWORK', 0);
       }
-      return new GiphyAppError(
-        err.message || 'An error occurred.',
-        'UPSTREAM',
-        err.status,
-      );
+      return new GiphyAppError(err.message || 'An error occurred.', 'UPSTREAM', err.status);
     }
     return new GiphyAppError('Unknown error.', 'UNKNOWN');
   }

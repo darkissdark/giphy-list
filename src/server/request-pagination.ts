@@ -13,15 +13,8 @@ export function getPagination(
   const defaultLimit = options.defaultLimit ?? 16;
   const limit = Math.min(
     maxLimit,
-    Math.max(
-      1,
-      parseInt(String(req.query['limit'] ?? String(defaultLimit)), 10) ||
-        defaultLimit,
-    ),
+    Math.max(1, parseInt(String(req.query['limit'] ?? String(defaultLimit)), 10) || defaultLimit),
   );
-  const offset = Math.max(
-    0,
-    parseInt(String(req.query['offset'] ?? '0'), 10) || 0,
-  );
+  const offset = Math.max(0, parseInt(String(req.query['offset'] ?? '0'), 10) || 0);
   return { limit, offset };
 }

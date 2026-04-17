@@ -12,12 +12,9 @@
         <p class="sub">
           Author:
           @if (d.authorProfileUrl) {
-            <a
-              [href]="d.authorProfileUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              >{{ d.authorDisplayName }}</a
-            >
+            <a [href]="d.authorProfileUrl" target="_blank" rel="noopener noreferrer">{{
+              d.authorDisplayName
+            }}</a>
           } @else {
             {{ d.authorDisplayName }}
           }
@@ -66,9 +63,7 @@
         <section class="more" aria-label="More GIFs by this author">
           <h2 class="more-title">More GIFs by author</h2>
           @if (authorFetchDone && !authorLoading && authorItems.length === 0) {
-            <p class="state subtle">
-              No other GIFs by this author were found.
-            </p>
+            <p class="state subtle">No other GIFs by this author were found.</p>
           }
           @if (authorItems.length > 0) {
             <app-gif-list

@@ -11,6 +11,7 @@ import {
   input,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
 import type { GifItem } from '../../giphy/giphy.types';
 import { createCopyFeedback } from '../../shared/copy-feedback';
 

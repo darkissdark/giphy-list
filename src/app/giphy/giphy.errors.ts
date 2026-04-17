@@ -1,9 +1,4 @@
-export type GiphyAppErrorCode =
-  | 'RATE_LIMIT'
-  | 'BAD_REQUEST'
-  | 'UPSTREAM'
-  | 'NETWORK'
-  | 'UNKNOWN';
+export type GiphyAppErrorCode = 'RATE_LIMIT' | 'BAD_REQUEST' | 'UPSTREAM' | 'NETWORK' | 'UNKNOWN';
 
 export class GiphyAppError extends Error {
   readonly code: GiphyAppErrorCode;

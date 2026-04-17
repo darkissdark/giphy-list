@@ -1,5 +1,7 @@
 import { computed, signal } from '@angular/core';
+
 import { TimeoutError, catchError, finalize, of, timeout } from 'rxjs';
+
 import { GiphyAppError } from '../giphy/giphy.errors';
 import type { GifItem } from '../giphy/giphy.types';
 
@@ -136,4 +138,3 @@ export class PagedGifListStore {
     return isLoadMore ? this.options.messages.loadMore : this.options.messages.initial;
   }
 }
-
