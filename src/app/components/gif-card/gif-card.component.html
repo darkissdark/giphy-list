@@ -1,0 +1,42 @@
+<div class="card">
+  <a
+    class="card-link"
+    [routerLink]="['/gif', gif.id]"
+    [attr.aria-label]="'Open GIF page: ' + gif.title"
+    [attr.title]="gif.title"
+  >
+    <span
+      class="thumb gif-container"
+      [class.loading]="!isLoaded"
+      [style.aspect-ratio]="thumbAspectRatio"
+    >
+      <picture>
+        <source [srcset]="displayWebpSrc" type="image/webp" />
+        <img
+          [src]="displaySrc"
+          [alt]="gif.alt"
+          [loading]="highFetchPriority() ? 'eager' : 'lazy'"
+          [attr.fetchpriority]="highFetchPriority() ? 'high' : null"
+          decoding="async"
+          (load)="onLoad()"
+          (error)="onImgError()"
+        />
+      </picture>
+      @if (!isLoaded) {
+        <span class="skeleton-overlay" aria-hidden="true"></span>
+      }
+    </span>
+  </a>
+  @if (gif.shareUrl) {
+    <button
+      type="button"
+      class="share-btn"
+      [cdkCopyToClipboard]="gif.shareUrl"
+      (cdkCopyToClipboardCopied)="onShareCopied()"
+      [disabled]="copyDisabled"
+      [attr.aria-label]="'Copy GIF link: ' + gif.title"
+    >
+      {{ shareLabel }}
+    </button>
+  }
+</div>

@@ -1,0 +1,22 @@
+<section class="masonry-wrapper" [attr.aria-label]="gridAriaLabel()" (window:resize)="onViewportResize()">
+  @for (column of columns; track $index) {
+    <div class="masonry-column">
+      @for (gif of column; track gif.id) {
+        <app-gif-card [gif]="gif" [highFetchPriority]="itemIndex(gif.id) < 4" />
+      }
+    </div>
+  }
+</section>
+
+@if (hasMore()) {
+  <div class="more">
+    <button
+      type="button"
+      class="btn"
+      (click)="loadMoreClick.emit()"
+      [disabled]="loadingMore()"
+    >
+      {{ loadingMore() ? "Loading..." : "Load more" }}
+    </button>
+  </div>
+}

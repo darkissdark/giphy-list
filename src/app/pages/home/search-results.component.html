@@ -1,0 +1,19 @@
+<section *ngIf="store.error()" class="banner error" role="alert">
+  <span>{{ store.error() }}</span>
+  <button type="button" class="linkish" (click)="retry()">Try again</button>
+</section>
+
+<section *ngIf="showEmpty" class="empty" aria-live="polite">
+  <h2 class="empty-title">No results found</h2>
+  <p class="empty-text">Try a different keyword.</p>
+</section>
+
+@if (store.items().length > 0) {
+  <app-gif-list
+    [items]="store.items()"
+    gridAriaLabel="Search results"
+    [hasMore]="hasMore"
+    [loadingMore]="store.loadingMore()"
+    (loadMoreClick)="onLoadMore()"
+  />
+}

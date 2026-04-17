@@ -1,0 +1,7 @@
+<div class="page">
+  @if (searchTrimmed() === '') {
+    <app-trending-list />
+  } @else {
+    <app-search-results [query]="searchTrimmed()" />
+  }
+</div>

@@ -1,0 +1,14 @@
+<section *ngIf="store.error()" class="banner error" role="alert">
+  <span>{{ store.error() }}</span>
+  <button type="button" class="linkish" (click)="retry()">Try again</button>
+</section>
+
+@if (store.items().length > 0 || store.loading()) {
+  <app-gif-list
+    [items]="store.items()"
+    gridAriaLabel="Trending GIFs"
+    [hasMore]="hasMore"
+    [loadingMore]="store.loadingMore()"
+    (loadMoreClick)="onLoadMore()"
+  />
+}

@@ -1,59 +1,64 @@
-# GiphyList
+# GIF Search (Angular + Giphy)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.24.
+Web app for searching GIFs using the **Giphy API**. The API key **never reaches the browser**: requests go through a local Express proxy (`/api/gifs/*`) that calls `api.giphy.com`.
 
-## Development server
+## Requirements
 
-To start a local development server, run:
+- Node.js (LTS)
+- [Giphy API](https://developers.giphy.com/) key
 
-```bash
-ng serve
-```
+## Quick start
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1) Install dependencies:
 
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+2) Create `.env` in the project root (next to `package.json`):
 
 ```bash
-ng generate --help
+cp .env.example .env
 ```
 
-## Building
+Set `GIPHY_API_KEY`.
 
-To build the project run:
+3) Start the dev server:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Open `http://localhost:4200/`.
 
-## Running unit tests
+### API check (optional)
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+After startup, you can open in a browser:
+
+`http://localhost:4200/api/gifs/search?q=test`
+
+## Production build + SSR
 
 ```bash
-ng test
+npm run build
+npm run serve:ssr:giphy-list
 ```
 
-## Running end-to-end tests
+By default, the SSR server listens on port `4000` (or `PORT` from env).
 
-For end-to-end (e2e) testing, run:
+## Implemented features
+
+- Trending GIFs are shown on the home page when query is empty
+- Search with **debounce** + **distinctUntilChanged**
+- Empty state / errors / **rate limit**
+- Details page **`/gif/:id`** (copy, download)
+- **More GIFs by author** block (via `/api/gifs/by-user`)
+- **Copy link** (`@angular/cdk/clipboard`) with short UX feedback
+- **GIF download** through server endpoint
+- **TransferState** only for first result page (to avoid bloating HTML)
+
+## Tests
 
 ```bash
-ng e2e
+npm test
 ```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
