@@ -42,6 +42,7 @@ async function resolveHandler() {
 
 export default async function instrumentedHandler(req, res) {
   res.setHeader('X-Debug-Api-Index', '1');
+  res.setHeader('X-Debug-Api-Path', req?.url ?? '');
   logDebug('H1-H5', 'Vercel function entry reached', {
     url: req?.url ?? '',
     method: req?.method ?? '',
