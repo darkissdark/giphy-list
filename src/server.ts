@@ -21,6 +21,40 @@ const projectRoot = resolve(serverDistFolder, '../..');
 loadEnv({ path: resolve(projectRoot, '.env') });
 loadEnv({ path: resolve(process.cwd(), '.env') });
 
+// #region agent log
+process.on('warning', (warning) => {
+  const warningCode = (warning as Error & { code?: string }).code ?? '';
+  console.warn('[debug:node-warning]', {
+    runId: 'node-warning-trace',
+    code: warningCode,
+    name: warning.name,
+    message: warning.message,
+    stack: warning.stack ?? '',
+  });
+  fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Debug-Session-Id': '981d77',
+    },
+    body: JSON.stringify({
+      sessionId: '981d77',
+      runId: 'node-warning-trace',
+      hypothesisId: 'H1-H5',
+      location: 'src/server.ts:process-warning',
+      message: 'Node warning captured',
+      data: {
+        name: warning.name,
+        code: warningCode,
+        message: warning.message,
+        stack: warning.stack ?? '',
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+});
+// #endregion
+
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
