@@ -1,8 +1,8 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index" },
-    { "source": "/(.*)", "destination": "/api/index" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index" },
+    { "src": "/(.*)", "dest": "/api/index" }
   ]
 }
