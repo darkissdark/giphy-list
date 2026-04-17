@@ -5,7 +5,7 @@ import { TimeoutError, catchError, finalize, of, timeout } from 'rxjs';
 import { GiphyAppError } from '../giphy/giphy.errors';
 import type { GifItem } from '../giphy/giphy.types';
 
-export const GIF_LIST_REQUEST_TIMEOUT_MS = 20_000;
+export const GIF_LIST_REQUEST_TIMEOUT_MS = 10_000;
 
 export type GifListPagePayload = { items: GifItem[]; totalCount: number };
 

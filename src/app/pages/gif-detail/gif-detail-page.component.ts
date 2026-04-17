@@ -110,7 +110,7 @@ export class GifDetailPageComponent {
               this.cdr.markForCheck();
 
               return this.giphy.getByAuthor(handle, id, 0, 24).pipe(
-                timeout(25_000),
+                timeout(7_000),
                 tap((res) => {
                   this.authorItems = res.items;
                 }),
