@@ -49,10 +49,46 @@ export function createGiphyControllers(giphy: GiphyClient) {
       if (!apiKey) return;
 
       const { limit, offset } = getPagination(req);
+      // #region agent log
+      fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Debug-Session-Id': '981d77',
+        },
+        body: JSON.stringify({
+          sessionId: '981d77',
+          runId: 'trending-cache-path',
+          hypothesisId: 'H1-H5',
+          location: 'src/server/giphy-controllers.ts:trending',
+          message: 'Trending API request start',
+          data: { offset, limit, host: String(req.headers['host'] ?? '') },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
 
       const key = trendingListCacheKey(limit, offset);
       const cached = trendingResponseCache.get(key);
       if (cached) {
+        // #region agent log
+        fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Debug-Session-Id': '981d77',
+          },
+          body: JSON.stringify({
+            sessionId: '981d77',
+            runId: 'trending-cache-path',
+            hypothesisId: 'H1-H5',
+            location: 'src/server/giphy-controllers.ts:trending',
+            message: 'Trending API memory-cache hit',
+            data: { offset, limit },
+            timestamp: Date.now(),
+          }),
+        }).catch(() => {});
+        // #endregion
         res.json(cached);
         return;
       }
@@ -63,6 +99,24 @@ export function createGiphyControllers(giphy: GiphyClient) {
         const totalCount = data.pagination?.total_count ?? items.length;
         const body = { items, totalCount };
         trendingResponseCache.set(key, body);
+        // #region agent log
+        fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Debug-Session-Id': '981d77',
+          },
+          body: JSON.stringify({
+            sessionId: '981d77',
+            runId: 'trending-cache-path',
+            hypothesisId: 'H1-H5',
+            location: 'src/server/giphy-controllers.ts:trending',
+            message: 'Trending API upstream fetch and cache set',
+            data: { offset, limit, items: body.items.length },
+            timestamp: Date.now(),
+          }),
+        }).catch(() => {});
+        // #endregion
         res.json(body);
       } catch (e) {
         mapAxiosError(e, res);
