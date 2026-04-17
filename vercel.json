@@ -2,6 +2,7 @@
   "version": 2,
   "buildCommand": "npm run build",
   "routes": [
+    { "src": "/(.*\\.(?:js|css|map|json|txt|xml|ico|png|jpg|jpeg|gif|webp|svg|woff2?))", "dest": "/$1" },
     { "src": "/api/(.*)", "dest": "/api/index" },
     { "src": "/(.*)", "dest": "/api/index" }
   ]
