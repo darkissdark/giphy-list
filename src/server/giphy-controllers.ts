@@ -73,10 +73,70 @@ export function createGiphyControllers(giphy: GiphyClient) {
       const rawUrl = String(req.query['url'] ?? '');
       const filename =
         String(req.query['filename'] ?? 'giphy.gif').replace(/[^\w.-]+/g, '_') || 'giphy.gif';
+      // #region agent log
+      fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Debug-Session-Id': '981d77',
+        },
+        body: JSON.stringify({
+          sessionId: '981d77',
+          runId: 'detail-refresh-download',
+          hypothesisId: 'H1-H5',
+          location: 'src/server/giphy-controllers.ts:download',
+          message: 'Download endpoint called',
+          data: {
+            rawUrl,
+            filename,
+            referer: String(req.headers['referer'] ?? ''),
+            host: String(req.headers['host'] ?? ''),
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
 
       const parsed = assertAllowedGifUrl(rawUrl);
       if (!parsed) {
-        sendError(res, 400, 'Invalid or disallowed GIF URL.', 'BAD_REQUEST');
+        let rawHost = '';
+        try {
+          rawHost = new URL(rawUrl).hostname.toLowerCase();
+        } catch {}
+        // #region agent log
+        fetch('http://127.0.0.1:7367/ingest/892d3f42-fe50-4aa8-b486-4b0c3b939b4a', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Debug-Session-Id': '981d77',
+          },
+          body: JSON.stringify({
+            sessionId: '981d77',
+            runId: 'detail-refresh-download',
+            hypothesisId: 'H1-H5',
+            location: 'src/server/giphy-controllers.ts:download',
+            message: 'Download URL rejected by allowlist',
+            data: {
+              rawUrl,
+              rawHost,
+              referer: String(req.headers['referer'] ?? ''),
+              host: String(req.headers['host'] ?? ''),
+            },
+            timestamp: Date.now(),
+          }),
+        }).catch(() => {});
+        // #endregion
+        res.setHeader('X-Debug-Rejected-Host', rawHost || 'invalid-url');
+        res.status(400).json({
+          error: {
+            code: 'BAD_REQUEST',
+            message: 'Invalid or disallowed GIF URL.',
+            debug: {
+              rejectedHost: rawHost || 'invalid-url',
+              rawUrl,
+            },
+          },
+        });
         return;
       }
 
