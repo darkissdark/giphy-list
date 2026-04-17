@@ -1,12 +1,6 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "functions": {
-    "api/index.mjs": {
-      "runtime": "nodejs20.x",
-      "includeFiles": "dist/giphy-list/**"
-    }
-  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index" },
     { "source": "/(.*)", "destination": "/api/index" }
