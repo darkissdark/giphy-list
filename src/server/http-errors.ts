@@ -30,10 +30,25 @@ export function requireApiKey(res: express.Response): string | null {
 
 export function mapAxiosError(err: unknown, res: express.Response): void {
   if (axios.isAxiosError(err)) {
-    const ax = err as AxiosError<{ message?: string }>;
+    const ax = err as AxiosError<{
+      message?: string;
+      meta?: { msg?: string; error_code?: string };
+    }>;
     const status = ax.response?.status ?? 502;
     if (status === 429) {
       sendError(res, 429, 'Giphy rate limit exceeded. Please try again later.', 'RATE_LIMIT');
+      return;
+    }
+    const upstreamMeta = ax.response?.data?.meta;
+    const upstreamMessage = [
+      upstreamMeta?.msg,
+      upstreamMeta?.error_code,
+      ax.response?.data?.message,
+    ]
+      .filter(Boolean)
+      .join(' ');
+    if (status === 400 && /invalid gif id/i.test(upstreamMessage)) {
+      sendError(res, 404, 'GIF not found.', 'UPSTREAM');
       return;
     }
     const msg = ax.response?.data?.message || ax.message || 'Error calling Giphy API.';

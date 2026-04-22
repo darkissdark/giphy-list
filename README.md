@@ -62,3 +62,19 @@ By default, the SSR server listens on port `4000` (or `PORT` from env).
 ```bash
 npm test
 ```
+
+### Playwright
+
+```bash
+# full local run (UI + API)
+npm run test:pw
+
+# API tests only
+npm run test:api
+
+# interactive UI mode
+npm run test:ui
+
+# remote smoke (skips local webServer when TARGET_URL is set)
+TARGET_URL=https://your-app.vercel.app npm run test:pw -- --grep-invert @api --project=chromium-desktop
+```
