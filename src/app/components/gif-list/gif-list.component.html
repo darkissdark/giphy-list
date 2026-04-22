@@ -1,5 +1,6 @@
 <section
   class="masonry-wrapper"
+  data-testid="gif-grid"
   [attr.aria-label]="gridAriaLabel()"
   (window:resize)="onViewportResize()"
 >
@@ -14,7 +15,13 @@
 
 @if (hasMore()) {
   <div class="more">
-    <button type="button" class="btn" (click)="loadMoreClick.emit()" [disabled]="loadingMore()">
+    <button
+      type="button"
+      class="btn"
+      data-testid="load-more"
+      (click)="loadMoreClick.emit()"
+      [disabled]="loadingMore()"
+    >
       {{ loadingMore() ? 'Loading...' : 'Load more' }}
     </button>
   </div>
